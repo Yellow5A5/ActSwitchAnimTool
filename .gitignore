@@ -6,7 +6,7 @@ local.properties
 bin/
 gen/
 build/
+captures/
 *.idea
 *.iml
-.gradle
-captures/
+.gradlecaptures/

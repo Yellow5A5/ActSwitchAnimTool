@@ -15,28 +15,43 @@ import yellow5a5.actswitchanimtool.ActSwitchAnimTool;
 
 public class FirstActivity extends AppCompatActivity {
 
+    private FloatingActionButton fab;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_first);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+
+        fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
                 Intent intent = new Intent(FirstActivity.this, SecondActivity.class);
-                new ActSwitchAnimTool(FirstActivity.this)
-                        .setAnimType(0)
+                new ActSwitchAnimTool(FirstActivity.this).setAnimType(0)
                         .target(fab)
+                        .setShrinkBack(true)
                         .setmColorStart(Color.parseColor("#FF5777"))
+                        .setmColorEnd(Color.parseColor("#FF5777"))
                         .startActivity(intent, false)
                         .build();
             }
         });
+    }
+
+    @Override
+    protected void onResume() {
+        new ActSwitchAnimTool(FirstActivity.this)
+                .setAnimType(1)
+                .target(fab)
+                .setmColorStart(Color.parseColor("#FF5777"))
+                .setmColorEnd(Color.parseColor("#FF5777"))
+                .build();
+        super.onResume();
     }
 
     @Override

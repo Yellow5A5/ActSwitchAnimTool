@@ -21,8 +21,15 @@ import android.view.ViewTreeObserver;
  */
 public class ActSwitchAnimTool {
 
-    private int ANIM_DURATION = 1000;
+    public final int ANIM_DURATION = 700;
+    public final int MODE_UNINIT = -1;
+    public final int MODE_SPREAD = 0;
+    public final int MODE_SHRINK = 1;
 
+    private final String TRANSFORMER_COLOR_END = "ACT_SWITCH_ANIM_COLOR_END";
+    private final String TRANSFORMER_TARGET_LOCATION = "ACT_SWITCH_ANIM_TARGET_LOCATION";
+
+    private View mTargetView;
     private ViewGroup mDecorView;
     private SwitchAnimView mSwitchAnimView;
     private Activity mStartAct;
@@ -33,7 +40,7 @@ public class ActSwitchAnimTool {
     private int targetViewHeight;
     private int[] targetLocation = new int[2];
 
-    private ValueAnimator scaleAnim;
+    private boolean isNeedShrinkBack;
 
     public ActSwitchAnimTool(Activity activity) {
         mStartAct = activity;
@@ -42,18 +49,25 @@ public class ActSwitchAnimTool {
     }
 
     public ActSwitchAnimTool startActivity(final Intent intent, final boolean isNeedFinish) {
-        intent.putExtra("location", targetLocation);
-        intent.putExtra("color", mColorEnd);
+        intent.putExtra(TRANSFORMER_TARGET_LOCATION, targetLocation);
+        intent.putExtra(TRANSFORMER_COLOR_END, mColorEnd);
         mSwitchAnimView.setSwitchAnimCallback(new SwitchAnimCallback() {
             @Override
             public void onAnimationEnd() {
                 mStartAct.startActivity(intent);
                 if (isNeedFinish == true) {
+                    Log.e(ActSwitchAnimTool.class.getName(), "postDelayed run: true");
                     mStartAct.finish();
                 } else {
+                    Log.e(ActSwitchAnimTool.class.getName(), "postDelayed run: false");
                     mDecorView.postDelayed(new Runnable() {
                         @Override
                         public void run() {
+                            Log.e(ActSwitchAnimTool.class.getName(), "postDelayed run: ");
+                            //if you need turn back by shrinking~ you need add~
+                            if (isNeedShrinkBack == false) {
+                                mSwitchAnimView.resetAnimParam();
+                            }
                             mDecorView.removeView(mSwitchAnimView);
                         }
                     }, 200);
@@ -62,19 +76,26 @@ public class ActSwitchAnimTool {
 
             @Override
             public void onAnimationUpdate(int progress) {
-                Log.e(ActSwitchAnimTool.class.getName(), "onAnimationUpdate: " + progress);
+                /* Maybe you want change the alpha of Target-View ~~.
+                if (mTargetView != null){
+                    mTargetView.setAlpha((float) (1 - progress / 100.0f));
+                }
+                */
             }
         });
         return this;
     }
 
+
     public ActSwitchAnimTool receiveIntent(Intent intent) {
-        targetLocation = intent.getIntArrayExtra("location");
-        mColorStart = intent.getIntExtra("color", Color.BLACK/*FIXME*/);
+        targetLocation = intent.getIntArrayExtra(TRANSFORMER_TARGET_LOCATION);
+        mColorEnd = intent.getIntExtra(TRANSFORMER_COLOR_END, Color.BLUE);
+        setmColorEnd(mColorEnd);
         return this;
     }
 
     public ActSwitchAnimTool target(final View view) {
+        mTargetView = view;
         final ViewGroup.LayoutParams bgParams = new ViewGroup.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         //background image.
@@ -93,12 +114,26 @@ public class ActSwitchAnimTool {
         return this;
     }
 
+    public ActSwitchAnimTool setCustomEndCallBack(SwitchAnimCallback callback){
+        mSwitchAnimView.setSwitchAnimCallback(callback);
+        return this;
+    }
+
     public void build() {
-        if (mSwitchAnimView.getmAnimType() == 0) {
+        if (mSwitchAnimView.getmAnimType() == MODE_SPREAD) {
             mSwitchAnimView.startSpreadAnim();
-        } else if (mSwitchAnimView.getmAnimType() == 1) {
+        } else if (mSwitchAnimView.getmAnimType() == MODE_SHRINK) {
             mSwitchAnimView.startShrinkAnim();
         }
+    }
+
+    public ActSwitchAnimTool setShrinkBack(boolean isShrinkBack) {
+        isNeedShrinkBack = isShrinkBack;
+        return this;
+    }
+
+    public boolean isShrinkBack() {
+        return isNeedShrinkBack;
     }
 
     public ActSwitchAnimTool setAnimType(int type) {
@@ -107,11 +142,13 @@ public class ActSwitchAnimTool {
     }
 
     public ActSwitchAnimTool setmColorStart(int color) {
+        mColorStart = color;
         mSwitchAnimView.setmSpreadColor(color);
         return this;
     }
 
     public ActSwitchAnimTool setmColorEnd(int color) {
+        mColorEnd = color;
         mSwitchAnimView.setmShrinkColor(color);
         return this;
     }
@@ -139,10 +176,6 @@ public class ActSwitchAnimTool {
     }
 
     public class SwitchAnimView extends View {
-
-        private final int MODE_UNINIT = -1;
-        private final int MODE_SPREAD = 0;
-        private final int MODE_SHRINK = 1;
 
         private int mCenterX;
         private int mCenterY;
@@ -190,9 +223,15 @@ public class ActSwitchAnimTool {
             mShrinkPaint.setStrokeWidth(1);
             mShrinkPaint.setStyle(Paint.Style.STROKE);
             mShrinkPaint.setColor(Color.BLUE);
-            mDuration = 700;
+            mDuration = ANIM_DURATION;
             mScreenLength = (int) Math.sqrt(Math.pow(getResources().getDisplayMetrics().heightPixels, 2)
                     + Math.pow(getResources().getDisplayMetrics().widthPixels, 2));
+        }
+
+        public void resetAnimParam() {
+            mRadius = 2;
+            mSpreadPaint.setStrokeWidth(mRadius);
+            mShrinkPaint.setStrokeWidth(mRadius);
         }
 
         private void setAlpha(int alpha) {
@@ -252,12 +291,12 @@ public class ActSwitchAnimTool {
             }
             switch (getmAnimType()) {
                 case MODE_SPREAD:
-                    canvas.drawCircle(mCenterX, mCenterY, mRadius / 2 + mTargetCircleRadius, mSpreadPaint);
                     mSpreadPaint.setStrokeWidth(mRadius);
+                    canvas.drawCircle(mCenterX, mCenterY, mRadius / 2 + mTargetCircleRadius, mSpreadPaint);
                     break;
                 case MODE_SHRINK:
-                    canvas.drawCircle(mCenterX, mCenterY, mRadius / 2 + mTargetCircleRadius, mShrinkPaint);
                     mShrinkPaint.setStrokeWidth(mRadius);
+                    canvas.drawCircle(mCenterX, mCenterY, mRadius / 2 + mTargetCircleRadius, mShrinkPaint);
                     break;
             }
         }

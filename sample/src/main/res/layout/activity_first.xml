@@ -43,4 +43,15 @@
         app:layout_anchor="@id/app_bar"
         app:layout_anchorGravity="bottom|end" />
 
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/share_float_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:src="@drawable/icon_share"
+        app:rippleColor="#33D1FF"
+        app:backgroundTint="#33D1FF"
+        app:layout_anchor="@id/app_bar"
+        app:layout_anchorGravity="bottom|end"/>
+
 </android.support.design.widget.CoordinatorLayout>

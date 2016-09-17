@@ -1,25 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="yellow5a5.sample.SecondActivity"
-    >
+    tools:context="yellow5a5.sample.SecondActivity">
 
     <TextView
-        android:id="@+id/text"
-        android:layout_centerInParent="true"
-        android:text="You can try."
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
-    <android.support.design.widget.FloatingActionButton
-        android:layout_below="@id/text"
-        android:id="@+id/float_btn"
+        android:id="@+id/demo_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_margin="20dp"
+        android:singleLine="true"
+        android:text="You can touch KEY_BACK to return."
+        android:textColor="@android:color/darker_gray"
+        android:textSize="18sp" />
+
+    <TextView
+        android:layout_above="@id/demo_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_margin="20dp"
+        android:singleLine="true"
+        android:text="This is a new Activity."
+        android:textColor="@android:color/darker_gray"
+        android:textSize="18sp" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/demo_float_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/demo_tv"
         android:layout_margin="@dimen/fab_margin"
-        android:src="@android:drawable/ic_dialog_email"
-        />
+        android:src="@android:drawable/ic_dialog_email" />
 
 </RelativeLayout>

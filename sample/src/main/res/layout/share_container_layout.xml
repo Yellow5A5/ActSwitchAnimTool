@@ -1,38 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@android:color/darker_gray"
+    android:background="#33D1FF"
     android:gravity="center"
     android:orientation="vertical">
 
     <yellow5a5.sample.ShareDemo.ShareItemView
         android:id="@+id/item_facebook"
-        app:share_img="@drawable/icon_twitter"
-        app:share_text="Twitter"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        app:share_img="@drawable/icon_twitter"
+        app:share_text="Twitter">
 
     </yellow5a5.sample.ShareDemo.ShareItemView>
 
     <yellow5a5.sample.ShareDemo.ShareItemView
         android:id="@+id/item_twitter"
-        app:share_img="@drawable/icon_fb"
-        app:share_text="FaceBook"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        app:share_img="@drawable/icon_fb"
+        app:share_text="FaceBook">
 
     </yellow5a5.sample.ShareDemo.ShareItemView>
 
     <yellow5a5.sample.ShareDemo.ShareItemView
         android:id="@+id/item_google"
-        app:share_img="@drawable/icon_google_plus"
-        app:share_text="Google"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        app:share_img="@drawable/icon_google_plus"
+        app:share_text="Google">
 
     </yellow5a5.sample.ShareDemo.ShareItemView>
 
+
+    <ImageView
+        android:id="@+id/img_cancel"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="40dp"
+        android:src="@drawable/icon_cancel" />
 
 </LinearLayout>

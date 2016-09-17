@@ -41,6 +41,7 @@ public class ActSwitchAnimTool {
     private int[] targetLocation = new int[2];
 
     private boolean isNeedShrinkBack;
+    private boolean isWaitingResume;
 
     public ActSwitchAnimTool(Activity activity) {
         mStartAct = activity;
@@ -53,25 +54,48 @@ public class ActSwitchAnimTool {
         intent.putExtra(TRANSFORMER_COLOR_END, mColorEnd);
         mSwitchAnimView.setSwitchAnimCallback(new SwitchAnimCallback() {
             @Override
-            public void onAnimationEnd() {
-                mStartAct.startActivity(intent);
-                if (isNeedFinish == true) {
-                    Log.e(ActSwitchAnimTool.class.getName(), "postDelayed run: true");
-                    mStartAct.finish();
-                } else {
-                    Log.e(ActSwitchAnimTool.class.getName(), "postDelayed run: false");
-                    mDecorView.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            Log.e(ActSwitchAnimTool.class.getName(), "postDelayed run: ");
-                            //if you need turn back by shrinking~ you need add~
-                            if (isNeedShrinkBack == false) {
-                                mSwitchAnimView.resetAnimParam();
-                            }
-                            mDecorView.removeView(mSwitchAnimView);
-                        }
-                    }, 200);
+            public void onAnimationStart() {
+                switch (mSwitchAnimView.getmAnimType()) {
+                    case MODE_SPREAD:
+
+                        break;
+
+                    case MODE_SHRINK:
+
+                        break;
                 }
+            }
+
+            @Override
+            public void onAnimationEnd() {
+                switch (mSwitchAnimView.getmAnimType()) {
+                    case MODE_SPREAD:
+                        mStartAct.startActivity(intent);
+                        if (isNeedFinish == true) {
+                            mStartAct.finish();
+                        } else {
+                            mDecorView.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    //if you need turn back by shrinking~ you need add~
+                                    if (isNeedShrinkBack == false) {
+                                        mSwitchAnimView.resetAnimParam();
+                                        mDecorView.removeView(mSwitchAnimView);
+                                    } else {
+                                        isWaitingResume = true;
+                                    }
+                                }
+                            }, 200);
+                        }
+                        mSwitchAnimView.setClickable(true);
+                        break;
+
+                    case MODE_SHRINK:
+                        mSwitchAnimView.setClickable(false);
+
+                        break;
+                }
+
             }
 
             @Override
@@ -114,8 +138,51 @@ public class ActSwitchAnimTool {
         return this;
     }
 
-    public ActSwitchAnimTool setCustomEndCallBack(SwitchAnimCallback callback){
+    public ActSwitchAnimTool setCustomEndCallBack(SwitchAnimCallback callback) {
         mSwitchAnimView.setSwitchAnimCallback(callback);
+        return this;
+    }
+
+    public ActSwitchAnimTool addContainerView(final View view, final SwitchAnimCallback callback) {
+        mSwitchAnimView.setSwitchAnimCallback(new SwitchAnimCallback() {
+            @Override
+            public void onAnimationStart() {
+                switch (mSwitchAnimView.getmAnimType()) {
+                    case MODE_SPREAD:
+
+                        break;
+
+                    case MODE_SHRINK:
+
+                        break;
+                }
+            }
+
+            @Override
+            public void onAnimationEnd() {
+                if (view.getParent() != null)
+                    return;
+                final ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+                if (mSwitchAnimView.getmAnimType() == MODE_SPREAD) {
+                    mDecorView.addView(view);
+                    callback.onAnimationEnd();
+                } else if (mSwitchAnimView.getmAnimType() == MODE_SHRINK) {
+                    mSwitchAnimView.setSwitchAnimCallback(null);
+                }
+            }
+
+            @Override
+            public void onAnimationUpdate(int progress) {
+                callback.onAnimationUpdate(progress);
+            }
+        });
+        return this;
+    }
+
+    public ActSwitchAnimTool removeContainerView(View view) {
+        if (mDecorView != null && view != null) {
+            mDecorView.removeView(view);
+        }
         return this;
     }
 
@@ -125,15 +192,6 @@ public class ActSwitchAnimTool {
         } else if (mSwitchAnimView.getmAnimType() == MODE_SHRINK) {
             mSwitchAnimView.startShrinkAnim();
         }
-    }
-
-    public ActSwitchAnimTool setShrinkBack(boolean isShrinkBack) {
-        isNeedShrinkBack = isShrinkBack;
-        return this;
-    }
-
-    public boolean isShrinkBack() {
-        return isNeedShrinkBack;
     }
 
     public ActSwitchAnimTool setAnimType(int type) {
@@ -153,6 +211,19 @@ public class ActSwitchAnimTool {
         return this;
     }
 
+    public ActSwitchAnimTool setShrinkBack(boolean isShrinkBack) {
+        isNeedShrinkBack = isShrinkBack;
+        return this;
+    }
+
+    public boolean isShrinkBack() {
+        return isNeedShrinkBack;
+    }
+
+    public boolean isWaitingResume() {
+        return isWaitingResume;
+    }
+
     public int getTargetViewWidth() {
         return targetViewWidth;
     }
@@ -170,6 +241,8 @@ public class ActSwitchAnimTool {
     }
 
     public interface SwitchAnimCallback {
+        void onAnimationStart();
+
         void onAnimationEnd();
 
         void onAnimationUpdate(int progress);
@@ -229,14 +302,11 @@ public class ActSwitchAnimTool {
         }
 
         public void resetAnimParam() {
-            mRadius = 2;
+            mAnimType = -1;
+            mRadius = 0;
             mSpreadPaint.setStrokeWidth(mRadius);
             mShrinkPaint.setStrokeWidth(mRadius);
-        }
-
-        private void setAlpha(int alpha) {
-            mSpreadPaint.setAlpha(alpha);
-            mShrinkPaint.setAlpha(alpha);
+            invalidate();
         }
 
         private void initAnimation() {
@@ -258,6 +328,14 @@ public class ActSwitchAnimTool {
                 }
             });
             mAnimator.addListener(new AnimatorListenerAdapter() {
+
+                @Override
+                public void onAnimationStart(Animator animation) {
+                    if (mSwitchAnimCallback != null) {
+                        mSwitchAnimCallback.onAnimationStart();
+                    }
+                }
+
                 @Override
                 public void onAnimationEnd(Animator animation) {
                     if (mSwitchAnimCallback != null) {
@@ -299,6 +377,11 @@ public class ActSwitchAnimTool {
                     canvas.drawCircle(mCenterX, mCenterY, mRadius / 2 + mTargetCircleRadius, mShrinkPaint);
                     break;
             }
+        }
+
+        private void setAlpha(int alpha) {
+            mSpreadPaint.setAlpha(alpha);
+            mShrinkPaint.setAlpha(alpha);
         }
 
         public int getmRadius() {

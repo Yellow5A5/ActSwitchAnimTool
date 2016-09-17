@@ -12,10 +12,16 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import yellow5a5.actswitchanimtool.ActSwitchAnimTool;
+import yellow5a5.sample.ShareDemo.ShareContainer;
 
 public class FirstActivity extends AppCompatActivity {
 
-    private FloatingActionButton fab;
+    private FloatingActionButton mActSwitchDemoBtn;
+    private FloatingActionButton mShareViewDemoBtn;
+
+    private ActSwitchAnimTool mFirstDemoActSwitchAnimTool;
+
+    private ShareContainer mShareContainer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,34 +29,80 @@ public class FirstActivity extends AppCompatActivity {
         setContentView(R.layout.activity_first);
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        mActSwitchDemoBtn = (FloatingActionButton) findViewById(R.id.fab);
+        mShareContainer = new ShareContainer(FirstActivity.this);
+        initTool();
 
-
-        fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+        //DEMO FIRST.
+        mActSwitchDemoBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
-                Intent intent = new Intent(FirstActivity.this, SecondActivity.class);
-                new ActSwitchAnimTool(FirstActivity.this).setAnimType(0)
-                        .target(fab)
-                        .setShrinkBack(true)
-                        .setmColorStart(Color.parseColor("#FF5777"))
-                        .setmColorEnd(Color.parseColor("#FF5777"))
-                        .startActivity(intent, false)
+                mFirstDemoActSwitchAnimTool.setAnimType(0).build();
+            }
+        });
+
+        //DEMO SECOND.
+        mShareViewDemoBtn = (FloatingActionButton) findViewById(R.id.share_float_btn);
+        final ActSwitchAnimTool shareDemoTool = new ActSwitchAnimTool(FirstActivity.this)
+                .target(mShareViewDemoBtn)
+                .setmColorStart(Color.parseColor("#33D1FF"))
+                .setmColorEnd(Color.parseColor("#33D1FF"));
+
+        mShareContainer.setIShareCallback(new ShareContainer.IShareCallback() {
+            @Override
+            public void onCancel() {
+                mShareContainer.hideShareBtn();
+                shareDemoTool.setAnimType(1)
+                        .removeContainerView(mShareContainer)
                         .build();
+            }
+        });
+        mShareViewDemoBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                shareDemoTool.setAnimType(0)
+                        .addContainerView(mShareContainer, new ActSwitchAnimTool.SwitchAnimCallback() {
+                            @Override
+                            public void onAnimationStart() {
+
+                            }
+
+                            @Override
+                            public void onAnimationEnd() {
+                                mShareContainer.showShareBtn();
+                            }
+
+                            @Override
+                            public void onAnimationUpdate(int progress) {
+
+                            }
+                        }).
+                        build();
             }
         });
     }
 
-    @Override
-    protected void onResume() {
-        new ActSwitchAnimTool(FirstActivity.this)
-                .setAnimType(1)
-                .target(fab)
+    private void initTool() {
+        Intent intent = new Intent(FirstActivity.this, SecondActivity.class);
+        mFirstDemoActSwitchAnimTool = new ActSwitchAnimTool(FirstActivity.this).setAnimType(0)
+                .target(mActSwitchDemoBtn)
+                .setShrinkBack(true)
                 .setmColorStart(Color.parseColor("#FF5777"))
                 .setmColorEnd(Color.parseColor("#FF5777"))
-                .build();
+                .startActivity(intent, false);
+    }
+
+    @Override
+    protected void onResume() {
+        if (mFirstDemoActSwitchAnimTool == null)
+            return;
+        if (mFirstDemoActSwitchAnimTool.isWaitingResume()) {
+            mFirstDemoActSwitchAnimTool.setAnimType(1)
+                    .build();
+        }
+
         super.onResume();
     }
 

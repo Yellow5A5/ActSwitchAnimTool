@@ -9,4 +9,4 @@ build/
 captures/
 *.idea
 *.iml
-.gradlecaptures/
+.gradle

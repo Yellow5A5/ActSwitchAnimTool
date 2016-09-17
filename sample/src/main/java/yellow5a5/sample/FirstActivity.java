@@ -100,6 +100,7 @@ public class FirstActivity extends AppCompatActivity {
             return;
         if (mFirstDemoActSwitchAnimTool.isWaitingResume()) {
             mFirstDemoActSwitchAnimTool.setAnimType(1)
+                    .setIsWaitingResume(false)
                     .build();
         }
 

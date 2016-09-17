@@ -224,6 +224,11 @@ public class ActSwitchAnimTool {
         return isWaitingResume;
     }
 
+    public ActSwitchAnimTool setIsWaitingResume(boolean isWaitingResume) {
+        this.isWaitingResume = isWaitingResume;
+        return this;
+    }
+
     public int getTargetViewWidth() {
         return targetViewWidth;
     }

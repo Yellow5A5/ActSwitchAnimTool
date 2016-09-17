@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="ShareItemView">
+        <attr name="share_img" format="integer" />
+        <attr name="share_text" format="string"/>
+    </declare-styleable>
+</resources>

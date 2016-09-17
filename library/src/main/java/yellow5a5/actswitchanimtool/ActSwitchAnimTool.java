@@ -21,15 +21,14 @@ import android.view.ViewTreeObserver;
  */
 public class ActSwitchAnimTool {
 
-    public final int ANIM_DURATION = 700;
-    public final int MODE_UNINIT = -1;
-    public final int MODE_SPREAD = 0;
-    public final int MODE_SHRINK = 1;
+    public final static int ANIM_DURATION = 700;
+    public final static int MODE_UNINIT = -1;
+    public final static int MODE_SPREAD = 0;
+    public final static int MODE_SHRINK = 1;
 
     private final String TRANSFORMER_COLOR_END = "ACT_SWITCH_ANIM_COLOR_END";
     private final String TRANSFORMER_TARGET_LOCATION = "ACT_SWITCH_ANIM_TARGET_LOCATION";
 
-    private View mTargetView;
     private ViewGroup mDecorView;
     private SwitchAnimView mSwitchAnimView;
     private Activity mStartAct;
@@ -57,11 +56,11 @@ public class ActSwitchAnimTool {
             public void onAnimationStart() {
                 switch (mSwitchAnimView.getmAnimType()) {
                     case MODE_SPREAD:
-
+                        mSwitchAnimView.setClickable(true);
                         break;
 
                     case MODE_SHRINK:
-
+                        mSwitchAnimView.setClickable(false);
                         break;
                 }
             }
@@ -87,11 +86,9 @@ public class ActSwitchAnimTool {
                                 }
                             }, 200);
                         }
-                        mSwitchAnimView.setClickable(true);
                         break;
 
                     case MODE_SHRINK:
-                        mSwitchAnimView.setClickable(false);
 
                         break;
                 }
@@ -119,7 +116,6 @@ public class ActSwitchAnimTool {
     }
 
     public ActSwitchAnimTool target(final View view) {
-        mTargetView = view;
         final ViewGroup.LayoutParams bgParams = new ViewGroup.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         //background image.
@@ -149,11 +145,11 @@ public class ActSwitchAnimTool {
             public void onAnimationStart() {
                 switch (mSwitchAnimView.getmAnimType()) {
                     case MODE_SPREAD:
-
+                        mSwitchAnimView.setClickable(true);
                         break;
 
                     case MODE_SHRINK:
-
+                        mSwitchAnimView.setClickable(false);
                         break;
                 }
             }
@@ -163,11 +159,15 @@ public class ActSwitchAnimTool {
                 if (view.getParent() != null)
                     return;
                 final ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-                if (mSwitchAnimView.getmAnimType() == MODE_SPREAD) {
-                    mDecorView.addView(view);
-                    callback.onAnimationEnd();
-                } else if (mSwitchAnimView.getmAnimType() == MODE_SHRINK) {
-                    mSwitchAnimView.setSwitchAnimCallback(null);
+                switch (mSwitchAnimView.getmAnimType()) {
+                    case MODE_SPREAD:
+                        mDecorView.addView(view);
+                        callback.onAnimationEnd();
+                        break;
+
+                    case MODE_SHRINK:
+                        mSwitchAnimView.setSwitchAnimCallback(null);
+                        break;
                 }
             }
 

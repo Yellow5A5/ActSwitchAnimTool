@@ -24,7 +24,7 @@ public class SecondActivity extends AppCompatActivity {
         mDemoFloatingBtn = (FloatingActionButton) findViewById(R.id.demo_float_btn);
         new ActSwitchAnimTool(this)
                 .receiveIntent(getIntent())
-                .setAnimType(1)
+                .setAnimType(ActSwitchAnimTool.MODE_SHRINK)
                 .target(mDemoFloatingBtn)
                 .build();
 
@@ -34,7 +34,7 @@ public class SecondActivity extends AppCompatActivity {
     public boolean onKeyUp(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK){
             new ActSwitchAnimTool(this)
-                    .setAnimType(0)
+                    .setAnimType(ActSwitchAnimTool.MODE_SPREAD)
                     .target(mDemoFloatingBtn)
                     .setmColorStart(Color.parseColor("#FF5777"))
                     .setmColorEnd(Color.parseColor("#FF5777"))

@@ -30,7 +30,7 @@ public class FirstActivity extends AppCompatActivity {
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         mActSwitchDemoBtn = (FloatingActionButton) findViewById(R.id.fab);
-        mShareContainer = new ShareContainer(FirstActivity.this);
+
         initTool();
 
         //DEMO FIRST.
@@ -49,12 +49,12 @@ public class FirstActivity extends AppCompatActivity {
                 .target(mShareViewDemoBtn)
                 .setmColorStart(Color.parseColor("#33D1FF"))
                 .setmColorEnd(Color.parseColor("#33D1FF"));
-
+        mShareContainer = new ShareContainer(FirstActivity.this);
         mShareContainer.setIShareCallback(new ShareContainer.IShareCallback() {
             @Override
             public void onCancel() {
                 mShareContainer.hideShareBtn();
-                shareDemoTool.setAnimType(1)
+                shareDemoTool.setAnimType(ActSwitchAnimTool.MODE_SHRINK)
                         .removeContainerView(mShareContainer)
                         .build();
             }
@@ -62,7 +62,7 @@ public class FirstActivity extends AppCompatActivity {
         mShareViewDemoBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                shareDemoTool.setAnimType(0)
+                shareDemoTool.setAnimType(ActSwitchAnimTool.MODE_SPREAD)
                         .addContainerView(mShareContainer, new ActSwitchAnimTool.SwitchAnimCallback() {
                             @Override
                             public void onAnimationStart() {

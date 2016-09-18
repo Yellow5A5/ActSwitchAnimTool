@@ -12,9 +12,11 @@ Demo:
 
 
 
-## How To
+## Usage
 
-### ● First
+### ● SPREAD_MODE
+
+#### 1.Keep the first activity.
 
 You can set the second parameter of *ActSwitchAnimTool.startActivity* to keep the FirstActivity. If you want keep it and show the shrink-Animation, you must take the method of *setShrinkBack(true)*.
 
@@ -34,21 +36,22 @@ mFirstDemoActSwitchAnimTool.setAnimType(ActSwitchAnimTool.MODE_SPREAD)
 		.build();
 ```
 
-if you don't need keep the first activity, you can take the method clearer like this.
+#### 2.Do not keep the first activity.
+
+if you don't need keep the first activity, you can take the method more clearly like this.
 
 ```java
 new ActSwitchAnimTool(FirstActivity.this).setAnimType(ActSwitchAnimTool.MODE_SPREAD)
         .target(mActSwitchDemoBtn)
-        .setShrinkBack(true)
         .setmColorStart(Color.parseColor("#FF5777"))
         .setmColorEnd(Color.parseColor("#FF5777"))
         .startActivity(intent, true)
         .build();
 ```
 
-### ● Second
+### ● SHRINK_MODE
 
-Place this code in the next Activity(Creating).
+Place this code in Second Activity to receive the message.
 
 ```java
 new ActSwitchAnimTool(this)
@@ -58,10 +61,11 @@ new ActSwitchAnimTool(this)
         .build();
 ```
 
+### ● Other 
 
-### ● CustomCallback
+#### ◦ CustomCallback
 
-You can set the custom callback like this(I set it at the method of KeyUp(event=keyback) in second Activity). The Animation will appear when I click back.
+You can set the custom callback like this, but it is in conflict with *startActivity*. You can change it inside if you want.(I set it at the method of KeyUp(event=keyback) in second Activity. The Animation will appear when I click back.). 
 
 ```java
 new ActSwitchAnimTool(this)
@@ -88,7 +92,7 @@ new ActSwitchAnimTool(this)
 ```
 
 
-### ● AddContainer !
+#### ◦ AddContainer !
 
 Take your custom view in here, to implements the effect you wanted.
 
@@ -128,14 +132,13 @@ Take your custom view in here, to implements the effect you wanted.
         });
 ```
 
+
 ## Demo－Introduction
 
-I has been implements the ShareContainer.This design is a reference to the idea of [Social share](https://ios.uplabs.com/posts/social-share-734184f5-822e-4e59-bf44-a713c4595dc0) by Ронжин Михаил.You can easy to implements it by the *AddContainer*;
+I has been implements the **ShareContainer**.This design is a reference to the idea of [Social share](https://ios.uplabs.com/posts/social-share-734184f5-822e-4e59-bf44-a713c4595dc0) by Ронжин Михаил.You can easy to implements it by the *AddContainer*;
 
 
 <img src="image/demo_show2.gif" width=300></img>
-
-
 
 
 ## License

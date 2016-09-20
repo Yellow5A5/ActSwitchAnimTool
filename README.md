@@ -10,7 +10,26 @@ Demo:
 <img src="image/demo_show2.gif" width=300></img>
 
 
+## Installation
 
+Step 1. Add it in your root build.gradle at the end of repositories.
+
+```java
+allprojects {
+	repositories {
+		...
+		maven { url "https://jitpack.io" }
+	}
+}
+```
+Step 2. Add the dependency
+
+```java
+dependencies {
+    ...
+    compile 'com.github.Yellow5A5:ActSwitchAnimTool:1.0.0'
+}
+```
 
 ## Usage
 
@@ -135,7 +154,7 @@ Take your custom view in here, to implements the effect you wanted.
 
 ## Demo－Introduction
 
-I has been implements the **ShareContainer**.This design is a reference to the idea of [Social share](https://ios.uplabs.com/posts/social-share-734184f5-822e-4e59-bf44-a713c4595dc0) by Ронжин Михаил.You can easy to implements it by the *AddContainer*;
+I have implemented the **ShareContainer**.This design is a reference to the idea of [Social share](https://ios.uplabs.com/posts/social-share-734184f5-822e-4e59-bf44-a713c4595dc0) by Ронжин Михаил.You can easy to implements it by the *AddContainer*;
 
 
 <img src="image/demo_show2.gif" width=300></img>

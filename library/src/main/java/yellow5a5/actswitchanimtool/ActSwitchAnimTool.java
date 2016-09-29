@@ -338,6 +338,10 @@ public class ActSwitchAnimTool {
                 public void onAnimationStart(Animator animation) {
                     if (mSwitchAnimCallback != null) {
                         mSwitchAnimCallback.onAnimationStart();
+                        if(mAnimType == MODE_SPREAD)
+                        {
+                            setVisibility(VISIBLE);
+                        }
                     }
                 }
 
@@ -345,6 +349,10 @@ public class ActSwitchAnimTool {
                 public void onAnimationEnd(Animator animation) {
                     if (mSwitchAnimCallback != null) {
                         mSwitchAnimCallback.onAnimationEnd();
+                        if(mAnimType == MODE_SHRINK)
+                        {
+                            setVisibility(GONE);
+                        }
                     }
                 }
             });

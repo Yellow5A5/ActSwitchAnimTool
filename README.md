@@ -27,7 +27,7 @@ Step 2. Add the dependency
 ```java
 dependencies {
     ...
-    compile 'com.github.Yellow5A5:ActSwitchAnimTool:1.0.0'
+    compile 'com.github.Yellow5A5:ActSwitchAnimTool:1.0.1'
 }
 ```
 
